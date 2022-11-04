@@ -3,7 +3,7 @@ body {
 
 	background-color: #f5f9fc;
 	padding-top: 100px;
-	
+
 	padding: 50px;
 
 	main {
@@ -46,7 +46,7 @@ body {
 			border: 1px solid #b6c1cd;
 			border: none;
 
-			&::placeholder  {
+			&::placeholder {
 				color: #b6c1cd;
 			}
 		}
@@ -88,13 +88,14 @@ body {
 				font-weight: 400;
 				font-style: normal;
 				color: #20455e;
+				word-wrap: break-word;
 			}
-			
+
 			footer {
 
 				display: flex;
 				justify-content: space-between;
-				
+
 				.meta-data {
 					color: #7a92a5;
 					font-size: 12px;
@@ -103,7 +104,35 @@ body {
 				}
 			}
 
-			
+
 		}
 	}
+}
+
+.styledLink {
+	color: #3899ec;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 12px;
+}
+
+.hiddenStyledButton {
+	color: #20455e;
+	cursor: pointer;
+	font-weight: 500;
+	font-size: 12px;
+	visibility: hidden;
+	opacity: 0.1;
+	transition: 0.3s;
+}
+
+.ticket:hover .hiddenStyledButton {
+	visibility: visible;
+	opacity: 1;
+	transition: opacity 0.3s linear;
+}
+
+.styledHeader {
+	display: flex;
+	justify-content: end;
 }
