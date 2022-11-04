@@ -114,6 +114,7 @@ body {
 	cursor: pointer;
 	font-weight: 500;
 	font-size: 12px;
+	width: fit-content;
 }
 
 .hiddenStyledButton {
@@ -155,4 +156,14 @@ body {
 	padding: 0 4px;
 	background-color: #9ecaf0;
 	opacity: 0.8;
+}
+
+.show-more {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	/* number of lines to show */
+	line-clamp: 3;
+	-webkit-box-orient: vertical
 }

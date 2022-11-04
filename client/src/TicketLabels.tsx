@@ -9,7 +9,9 @@ const TicketLabels: FC<TicketLabelsProps> = (props) => {
   return (
     <div className='labels-container'>
       {props?.labels?.map((label) => (
-        <span className='single-label'>{label}</span>
+        <span key={label} className='single-label'>
+          {label}
+        </span>
       ))}
     </div>
   );
