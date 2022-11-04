@@ -1,10 +1,11 @@
 # Wix FED Entry Level Exam
 
 Hi there!  
-In this exam you will extend and add new features to a simplified ticketing system.
+In this exam you will extend and add new features to a simplified [ticketing system](https://www.wix.com/wixanswers/main).
 The task's main purpose is to test your ability to learn new topics and deliver high quality digital products. It combines building UI components and a touch of server development as well.
 
 While no previous background is required to complete this task or to apply to this position, we do recommend getting to a basic level on the following subjects:
+- Git
 - JavaScript
 - HTML & CSS
 - React
@@ -14,7 +15,7 @@ While no previous background is required to complete this task or to apply to th
 1. Make sure you have a [GitHub](https://github.com) account
 2. Go [here](https://github.com/new/import) and import this repository into your account. Make sure to select the **private** option
 3. [Clone](https://try.github.io/) your new repository to your computer
-4. Make sure you have *Node.js* 10 or higher and *npm* 6 or higher installed
+4. Make sure you have *Node.js* 16 and *npm* 6 or higher installed but for best compatibility use node `v16.14.0`.
 5. Install the project dependencies by running `npm install` from the project's directory (using a terminal)
 6. Run the project by running `npm start`
 
@@ -75,6 +76,14 @@ A good rule of thumb for the effort here is that it should not exceed the time t
 
 *Note:* this step is also mandatory.  
 Friendly reminder to commit and push after completing this part.
+
+### Part 4 - [Previous experience only] Automated testing
+**If you do not have previous experience in web development, you can skip this part.**
+Otherwise, it is mandatory. 
+
+a. Add at least 3 automated browser tests using puppeteer, testing key features of your choice.
+b. Add component tests (using `jest`) to your work from *part 1*.
+
 
 ## General notes
 - Test your work well. Think of edge cases. Think of how users will use it, and make sure your work is of high quality
