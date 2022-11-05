@@ -10,14 +10,24 @@ export type Ticket = {
   hideTicket: (ticketId: string) => void;
 };
 
+export type ServerResponse = {
+  tickets: Ticket[];
+  totalLength: number;
+  length: number;
+  message?: string;
+};
+
 export type ApiClient = {
-  getTickets: () => Promise<Ticket[]>;
+  getTickets: (formData?: {}) => Promise<ServerResponse>;
 };
 
 export const createApiClient = (): ApiClient => {
   return {
-    getTickets: () => {
-      return axios.get(`http://localhost:3232/api/tickets`).then((res) => res.data);
+    getTickets: async (formData) => {
+      const res = await axios.get(`http://localhost:3232/api/tickets`, {
+        params: formData,
+      });
+      return res.data;
     },
   };
 };

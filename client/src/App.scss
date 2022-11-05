@@ -167,3 +167,34 @@ body {
 	line-clamp: 3;
 	-webkit-box-orient: vertical
 }
+
+.primary-button {
+	display: inline-block;
+	padding: 0.3em 1.2em;
+	margin: 0 0.1em 0.1em 0;
+	border: 0.16em solid rgba(255, 255, 255, 0);
+	border-radius: 4px;
+	box-sizing: border-box;
+	text-decoration: none;
+	font-family: 'Roboto', sans-serif;
+	font-weight: 300;
+	color: #000000;
+	text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
+	text-align: center;
+	transition: all 0.2s;
+	border-color: #458bd6;
+}
+
+.primary-button:hover {
+	background-color: #82b4e9;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+.primary-button:disabled {
+	background-color: #efefef;
+	border-color: #c5c5c5;
+	color: rgba(0, 0, 0, 0.35);
+	box-shadow: none;
+	cursor: default;
+}
