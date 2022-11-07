@@ -33,14 +33,14 @@ const App = () => {
       }
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          fetchTickets({ page: currentPage + 1 }); //Load next page if last element is visible
+          fetchTickets({ global: search, page: currentPage + 1 }); //Load next page if last element is visible
         }
       });
       if (node) {
         observer?.current?.observe(node);
       }
     },
-    [isLoading, hasMore, currentPage]
+    [isLoading, hasMore, currentPage, search]
   );
 
   async function fetchTickets(formData?: { global?: string; page?: number }) {
@@ -48,6 +48,9 @@ const App = () => {
     setHasError(false);
     try {
       const data = await api.getTickets(formData);
+
+      console.log(data);
+
       const areMorePages = data?.page < data?.totalPages;
       setHasMore(areMorePages);
       if (data?.page !== 1) {
