@@ -44,7 +44,7 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
   let filteredArray: Ticket[] = [];
 
   if (isGlobalSearch) {
-    filteredArray = objectArray.filter((obj) => obj.title?.toLowerCase().includes(global) && obj.content?.toLowerCase().includes(global));
+    filteredArray = objectArray.filter((obj) => obj.title?.toLowerCase().includes(global) || obj.content?.toLowerCase().includes(global));
   } else {
     filteredArray = objectArray.filter((obj) => obj.title?.toLowerCase().includes(title));
   }
@@ -53,7 +53,6 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
 
 app.get('/api/tickets', (req, res) => {
   const page = req.query.page || 1;
-
   let filter: filterObj = req.query;
   // if (req.query.global) {
   //   let queryStr = JSON.stringify(filter.global);
@@ -62,7 +61,15 @@ app.get('/api/tickets', (req, res) => {
 
   const filteredData = findBy(tempData, filter);
   const paginatedData = filteredData.slice((Number(page) - 1) * PAGE_SIZE, Number(page) * PAGE_SIZE);
-  res.json({ message: 'success', length: paginatedData.length, totalLength: filteredData.length, tickets: paginatedData });
+  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+  res.json({
+    message: 'success',
+    tickets: paginatedData,
+    length: paginatedData.length,
+    totalLength: filteredData.length,
+    page: Number(page),
+    totalPages: totalPages,
+  });
 });
 
 app.listen(PORT);

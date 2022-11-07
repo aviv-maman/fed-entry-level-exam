@@ -1,20 +1,21 @@
 import { FC, useState } from 'react';
 import TicketLabels from './TicketLabels';
 
-import type { Ticket } from './api';
+import type { Ticket } from '../api';
 import type { TicketsProps } from './Tickets';
 
 type SingleTicketProps = {
   ticket: Ticket;
   hideTicket: TicketsProps['hideTicket'];
+  lastTicketElementRef?: any;
 };
 
-const SingleTicket: FC<SingleTicketProps> = ({ ticket, hideTicket }) => {
+const SingleTicket: FC<SingleTicketProps> = ({ ticket, hideTicket, lastTicketElementRef }) => {
   const [showMore, setShowMore] = useState<boolean>(false);
   const toggleShowMore = (): void => setShowMore(!showMore);
 
   return (
-    <li key={ticket.id} className='ticket'>
+    <li key={ticket.id} className='ticket' ref={lastTicketElementRef}>
       <div className='styledHeader'>
         <span className='hiddenStyledButton' onClick={() => hideTicket(ticket.id)}>
           Hide

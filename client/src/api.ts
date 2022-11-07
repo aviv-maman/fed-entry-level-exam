@@ -7,27 +7,37 @@ export type Ticket = {
   creationTime: number;
   userEmail: string;
   labels?: string[];
-  hideTicket: (ticketId: string) => void;
 };
 
 export type ServerResponse = {
-  tickets: Ticket[];
-  totalLength: number;
-  length: number;
   message?: string;
+  tickets: Ticket[];
+  length: number;
+  totalLength: number;
+  page: number;
+  totalPages: number;
 };
 
 export type ApiClient = {
-  getTickets: (formData?: {}) => Promise<ServerResponse>;
+  getTickets: (formData?: { global?: string; page?: number }) => Promise<ServerResponse>;
 };
 
 export const createApiClient = (): ApiClient => {
   return {
     getTickets: async (formData) => {
-      const res = await axios.get(`http://localhost:3232/api/tickets`, {
-        params: formData,
-      });
-      return res.data;
+      let searchCanceler: () => void;
+      try {
+        const res = await axios.get(`http://localhost:3232/api/tickets`, {
+          params: formData,
+          cancelToken: new axios.CancelToken((canceler) => (searchCanceler = canceler)),
+        });
+        return res.data;
+      } catch (error) {
+        if (axios.isCancel(error)) {
+          return error;
+        }
+      }
+      return () => searchCanceler();
     },
   };
 };

@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import type { Ticket } from './api';
+import type { Ticket } from '../api';
 
 type TicketLabelsProps = {
   labels?: Ticket['labels'];
