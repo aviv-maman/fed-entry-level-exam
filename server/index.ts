@@ -59,10 +59,14 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
     filteredArray = objectArray.filter((obj) => obj.userEmail?.toLowerCase().trim() === userEmail);
     return filteredArray;
   } else if (after) {
-    filteredArray = objectArray.filter((obj) => obj.creationTime >= afterAsMilliseconds);
+    filteredArray = objectArray.filter(
+      (obj) => obj.creationTime >= afterAsMilliseconds && (obj.title?.includes(global) || obj.content?.toLowerCase().includes(global))
+    );
     return filteredArray;
   } else if (before) {
-    filteredArray = objectArray.filter((obj) => obj.creationTime <= beforeAsMilliseconds);
+    filteredArray = objectArray.filter(
+      (obj) => obj.creationTime <= beforeAsMilliseconds && (obj.title?.includes(global) || obj.content?.toLowerCase().includes(global))
+    );
     return filteredArray;
   } else {
     filteredArray = objectArray.filter((obj) => obj.title?.toLowerCase().includes(title));

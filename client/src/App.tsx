@@ -32,8 +32,10 @@ const App = () => {
       searchParamsObj.userEmail = val.split(':')[1];
     } else if (inputValueToSearch.startsWith('after:')) {
       searchParamsObj.after = val.split(':')[1];
+      searchParamsObj.global = val.split(' ')[1];
     } else if (inputValueToSearch.startsWith('before:')) {
       searchParamsObj.before = val.split(':')[1];
+      searchParamsObj.global = val.split(' ')[1];
     } else {
       searchParamsObj.global = val;
     }
