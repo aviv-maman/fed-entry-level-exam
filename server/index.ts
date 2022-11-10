@@ -22,6 +22,9 @@ type filterObj = {
   title?: string;
   content?: string;
   global?: string;
+  after?: string;
+  before?: string;
+  userEmail?: string;
 };
 
 type Ticket = {
@@ -40,15 +43,33 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
   const content: string = filterObj?.content?.toLowerCase() ?? '';
   const global: string = filterObj?.global?.toLowerCase() ?? '';
   const isGlobalSearch: boolean = filterObj?.global && filterObj?.global?.length > 0 ? true : false;
+  const userEmail: string = filterObj?.userEmail?.toLowerCase() ?? '';
+  const after: string = filterObj?.after ?? '';
+  const before: string = filterObj?.before ?? '';
+
+  const afterAsMilliseconds = Date.parse(after);
+  const beforeAsMilliseconds = Date.parse(before);
 
   let filteredArray: Ticket[] = [];
 
   if (isGlobalSearch) {
     filteredArray = objectArray.filter((obj) => obj.title?.toLowerCase().includes(global) || obj.content?.toLowerCase().includes(global));
+    return filteredArray;
+  } else if (userEmail) {
+    filteredArray = objectArray.filter((obj) => obj.userEmail?.toLowerCase().trim() === userEmail);
+    return filteredArray;
+  } else if (after) {
+    filteredArray = objectArray.filter((obj) => obj.creationTime >= afterAsMilliseconds);
+    console.log(afterAsMilliseconds);
+
+    return filteredArray;
+  } else if (before) {
+    filteredArray = objectArray.filter((obj) => obj.creationTime <= beforeAsMilliseconds);
+    return filteredArray;
   } else {
     filteredArray = objectArray.filter((obj) => obj.title?.toLowerCase().includes(title));
+    return filteredArray;
   }
-  return filteredArray;
 }
 
 app.get('/api/tickets', (req, res) => {

@@ -3,18 +3,15 @@ import SingleTicket from './SingleTicket';
 
 export type TicketsProps = {
   tickets: Ticket[];
-  search: string;
   hideTicket: (ticketId: string) => void;
   lastTicketElementRef?: any;
 };
 
-export const Tickets = ({ tickets, search, hideTicket, lastTicketElementRef }: TicketsProps) => {
-  const filteredTickets = tickets.filter((t) => (t.title.toLowerCase() + t.content.toLowerCase()).includes(search.toLowerCase()));
-
+export const Tickets = ({ tickets, hideTicket, lastTicketElementRef }: TicketsProps) => {
   return (
     <ul className='tickets'>
-      {filteredTickets.map((ticket, index) => {
-        if (filteredTickets.length === index + 1) {
+      {tickets.map((ticket, index) => {
+        if (tickets.length === index + 1) {
           return <SingleTicket lastTicketElementRef={lastTicketElementRef} key={ticket.id} ticket={ticket} hideTicket={hideTicket} />;
         } else {
           return <SingleTicket key={ticket.id} ticket={ticket} hideTicket={hideTicket} />;

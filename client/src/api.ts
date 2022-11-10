@@ -18,8 +18,16 @@ export type ServerResponse = {
   totalPages: number;
 };
 
+export type FormData = {
+  global?: string;
+  page?: number;
+  after?: string;
+  before?: string;
+  userEmail?: string;
+};
+
 export type ApiClient = {
-  getTickets: (formData?: { global?: string; page?: number }) => Promise<ServerResponse>;
+  getTickets: (formData?: FormData) => Promise<ServerResponse>;
 };
 
 export const createApiClient = (): ApiClient => {

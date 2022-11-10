@@ -2,6 +2,7 @@ import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'reac
 import './App.scss';
 import { Tickets } from './components/Tickets';
 import { createApiClient, Ticket } from './api';
+import type { FormData } from './api';
 
 export type AppState = {
   tickets?: Ticket[];
@@ -11,7 +12,7 @@ export type AppState = {
 const api = createApiClient();
 
 const App = () => {
-  const [search, setSearch] = useState<string>('');
+  const [searchParam, setSearchParam] = useState<string>('');
   const [fetchedTickets, setFetchedTickets] = useState<Ticket[]>([]);
   const [visibleTickets, setVisibleTickets] = useState<Ticket[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -23,6 +24,23 @@ const App = () => {
 
   const observer: MutableRefObject<any> = useRef();
 
+  // Check param type
+  const searchParamsHelper = (val: string, newPage?: number) => {
+    const searchParamsObj = { page: newPage, global: '', userEmail: '', after: '', before: '' };
+    const inputValueToSearch = val.trim().toLowerCase();
+    if (inputValueToSearch.startsWith('from:')) {
+      searchParamsObj.userEmail = val.split(':')[1];
+    } else if (inputValueToSearch.startsWith('after:')) {
+      searchParamsObj.after = val.split(':')[1];
+    } else if (inputValueToSearch.startsWith('before:')) {
+      searchParamsObj.before = val.split(':')[1];
+    } else {
+      searchParamsObj.global = val;
+    }
+    return searchParamsObj;
+  };
+
+  // For infinite scrolling
   const lastTicketElementRef = useCallback(
     (node: any) => {
       if (isLoading) {
@@ -33,17 +51,18 @@ const App = () => {
       }
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          fetchTickets({ global: search, page: currentPage + 1 }); //Load next page if last element is visible
+          const searchParams = searchParamsHelper(searchParam, currentPage + 1);
+          fetchTickets(searchParams); //Load next page if last element is visible
         }
       });
       if (node) {
         observer?.current?.observe(node);
       }
     },
-    [isLoading, hasMore, currentPage, search]
+    [isLoading, hasMore, currentPage, searchParam]
   );
 
-  async function fetchTickets(formData?: { global?: string; page?: number }) {
+  async function fetchTickets(formData?: FormData) {
     setIsLoading(true);
     setHasError(false);
     try {
@@ -75,10 +94,11 @@ const App = () => {
 
   let searchDebounce: any;
   const onSearch = (val: string, newPage?: number) => {
+    const searchParams = searchParamsHelper(val, newPage);
     clearTimeout(searchDebounce);
     searchDebounce = setTimeout(async () => {
-      setSearch(val);
-      fetchTickets({ global: val, page: 1 });
+      setSearchParam(val);
+      fetchTickets(searchParams);
     }, 300);
   };
 
@@ -90,10 +110,6 @@ const App = () => {
   const resetVisibleTickets = () => {
     setVisibleTickets(fetchedTickets);
   };
-
-  // const loadNextPage = () => {
-  //   fetchTickets({ page: currentPage + 1 });
-  // };
 
   return (
     <main>
@@ -118,7 +134,7 @@ const App = () => {
               </>
             )}
           </div>
-          <Tickets lastTicketElementRef={lastTicketElementRef} tickets={visibleTickets} search={search} hideTicket={hideTicket} />
+          <Tickets lastTicketElementRef={lastTicketElementRef} tickets={visibleTickets} hideTicket={hideTicket} />
         </>
       )}
       {isLoading && <h2>Loading...</h2>}
