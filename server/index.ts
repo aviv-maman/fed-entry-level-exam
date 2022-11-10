@@ -47,8 +47,8 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
   const after: string = filterObj?.after ?? '';
   const before: string = filterObj?.before ?? '';
 
-  const afterAsMilliseconds = Date.parse(after);
-  const beforeAsMilliseconds = Date.parse(before);
+  const afterAsMilliseconds = new Date(after).getTime();
+  const beforeAsMilliseconds = new Date(before).getTime();
 
   let filteredArray: Ticket[] = [];
 
@@ -60,8 +60,6 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
     return filteredArray;
   } else if (after) {
     filteredArray = objectArray.filter((obj) => obj.creationTime >= afterAsMilliseconds);
-    console.log(afterAsMilliseconds);
-
     return filteredArray;
   } else if (before) {
     filteredArray = objectArray.filter((obj) => obj.creationTime <= beforeAsMilliseconds);
