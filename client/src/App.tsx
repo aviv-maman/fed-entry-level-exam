@@ -1,4 +1,4 @@
-import { MutableRefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
 import './App.scss';
 import { Tickets } from './components/Tickets';
 import type { Ticket } from './api';
@@ -12,44 +12,22 @@ export type AppState = {
 };
 
 const App = () => {
-  ///Redux Example
-  // const { data, isFetching, isLoading, isError } = useFetchTicketsQuery({ limit: PAGE_SIZE, page: currentPage });
-  ///Redux
-  const [searchParam, setSearchParam] = useState<{ page?: number; global?: string; userEmail?: string; after?: string; before?: string }>({
+  const PAGE_SIZE: number = 20;
+  const [searchParam, setSearchParam] = useState<{ page: number; limit?: number, global?: string; userEmail?: string; after?: string; before?: string }>({
     page: 1,
+    limit: PAGE_SIZE,
     global: '',
     userEmail: '',
     after: '',
     before: '',
   });
 
-  ////////////////////////////////
-  // https://github.com/reduxjs/redux-toolkit/discussions/1163
-  const PAGE_SIZE = 20;
-  const [currentPage, setCurrentPage] = useState<number>(1); // Something calculated from scroll position
-
-  const lastResult = useFetchTicketsQuery({ limit: PAGE_SIZE, page: currentPage - 1 }, { skip: currentPage === 1 }); // Don't fetch pages before 0
-  const currentResult = useFetchTicketsQuery({ limit: PAGE_SIZE, page: currentPage, global: searchParam.global });
-  // const nextResult = useFetchTicketsQuery({ limit: PAGE_SIZE, page: currentPage + 1 });
-
-  const pageSize: number = currentResult?.data?.length || PAGE_SIZE;
-  const combinedTickets = useMemo(() => {
-    const arr = new Array(pageSize * (currentPage + 1));
-    // for (const data of [lastResult.data, currentResult.data, nextResult.data]) {
-    for (const data of [lastResult.data, currentResult.data]) {
-      if (data) {
-        arr.splice(data.offset, data.tickets.length, ...data.tickets);
-      }
-    }
-    return arr;
-  }, [pageSize, currentPage, lastResult.data, currentResult.data]);
-  // work with combined tickets from here
-  ////////////////////////////////
-
+  const currentResult = useFetchTicketsQuery(searchParam);
+  const [fetchedTickets, setFetchedTickets] = useState<Ticket[]>(currentResult?.data?.tickets || []);
   const [visibleTickets, setVisibleTickets] = useState<Ticket[]>([]);
-  const hiddenTicketsAmount = combinedTickets.length - visibleTickets.length;
+  const hiddenTicketsAmount = fetchedTickets.length - visibleTickets.length;
   // Check param type
-  const searchParamsHelper = (val: string, newPage?: number) => {
+  const searchParamsHelper = (val: string, newPage: number) => {
     const searchParamsObj = { page: newPage, global: '', userEmail: '', after: '', before: '' };
     const inputValueToSearch = val.trim().toLowerCase();
     if (inputValueToSearch.startsWith('from:')) {
@@ -71,7 +49,7 @@ const App = () => {
     const searchParams = searchParamsHelper(val, newPage);
     clearTimeout(searchDebounce);
     searchDebounce = setTimeout(async () => {
-      setSearchParam(searchParams);
+      setSearchParam({...searchParam, ...searchParams});
     }, 300);
   };
 
@@ -81,19 +59,24 @@ const App = () => {
   };
 
   const resetVisibleTickets = () => {
-    setVisibleTickets(combinedTickets);
+    setVisibleTickets(fetchedTickets);
   };
 
   const loadMore = () => {
-    setCurrentPage((prevState) => prevState + 1);
+    setSearchParam({...searchParam, page: searchParam.page + 1});
   };
 
-  //
   useEffect(() => {
-    setVisibleTickets(combinedTickets);
-  }, [combinedTickets]);
-
-  //
+    if (currentResult?.data?.tickets) {
+      if (currentResult?.data?.page === 1) {
+        setFetchedTickets(currentResult.data.tickets);
+        setVisibleTickets(currentResult.data.tickets);  
+      } else {
+        setFetchedTickets((prevState) => [...prevState, ...currentResult.data.tickets]);
+        setVisibleTickets((prevState) => [...prevState, ...currentResult.data.tickets]);   
+      }
+    }
+  }, [currentResult?.data?.tickets, currentResult.data?.page]);
 
   const observer: MutableRefObject<any> = useRef();
   // For infinite scrolling
@@ -108,14 +91,14 @@ const App = () => {
       const hasNextPage = currentResult?.data?.totalPages > currentResult?.data?.page;
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasNextPage) {
-          setCurrentPage((prevState) => prevState + 1); //Load next page if last element is visible
+          setSearchParam({...searchParam, page: searchParam.page + 1}); //Load next page if last element is visible
         }
       });
       if (node) {
         observer?.current?.observe(node);
       }
     },
-    [currentResult?.isFetching, currentResult?.data]
+    [currentResult?.isFetching, currentResult?.data, searchParam]
   );
 
   return (
@@ -128,7 +111,7 @@ const App = () => {
       <button onClick={loadMore}>Load More</button>
 
       <div>
-        <p>Number of tickets fetched in cache: {combinedTickets?.length}</p>
+        <p>Number of tickets fetched in cache: {fetchedTickets?.length}</p>
       </div>
 
       {visibleTickets && (
