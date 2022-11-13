@@ -77,14 +77,17 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
 app.get('/api/tickets', (req, res) => {
   const page = req.query.page || 1;
   let filter: filterObj = req.query;
+
+  console.log(req.query);
+  const limit = Number(req.query.limit) || 15;
   // if (req.query.global) {
   //   let queryStr = JSON.stringify(filter.global);
   //   filter = { ...filter, global: queryStr };
   // }
 
   const filteredData = findBy(tempData, filter);
-  const paginatedData = filteredData.slice((Number(page) - 1) * PAGE_SIZE, Number(page) * PAGE_SIZE);
-  const totalPages = Math.ceil(filteredData.length / PAGE_SIZE);
+  const paginatedData = filteredData.slice((Number(page) - 1) * limit, Number(page) * limit);
+  const totalPages = Math.ceil(filteredData.length / limit);
   res.json({
     message: 'success',
     tickets: paginatedData,
@@ -92,6 +95,7 @@ app.get('/api/tickets', (req, res) => {
     totalLength: filteredData.length,
     page: Number(page),
     totalPages: totalPages,
+    offset: Number(page) * limit,
   });
 });
 
