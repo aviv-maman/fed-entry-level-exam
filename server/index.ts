@@ -47,7 +47,7 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
   const after: string = filterObj?.after ?? '';
   const before: string = filterObj?.before ?? '';
 
-  const [day, month, year] = after.split('/');
+  const [day, month, year] = after.length > 0 ? after.split('/') : before.length > 0 ? before.split('/') : '0/0/0'.split('/');
   const formattedDate = `${month}/${day}/${year}`;
 
   // const afterAsMilliseconds = new Date(after).getTime();
