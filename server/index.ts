@@ -47,8 +47,13 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
   const after: string = filterObj?.after ?? '';
   const before: string = filterObj?.before ?? '';
 
-  const afterAsMilliseconds = new Date(after).getTime();
-  const beforeAsMilliseconds = new Date(before).getTime();
+  const [day, month, year] = after.split('/');
+  const formattedDate = `${month}/${day}/${year}`;
+
+  // const afterAsMilliseconds = new Date(after).getTime();
+  // const beforeAsMilliseconds = new Date(before).getTime();
+
+  const formattedDateAsMilliseconds = new Date(formattedDate).getTime();
 
   let filteredArray: Ticket[] = [];
 
@@ -60,12 +65,12 @@ function findBy(objectArray: Ticket[], filterObj: filterObj) {
     return filteredArray;
   } else if (after) {
     filteredArray = objectArray.filter(
-      (obj) => obj.creationTime >= afterAsMilliseconds && (obj.title?.includes(global) || obj.content?.toLowerCase().includes(global))
+      (obj) => obj.creationTime >= formattedDateAsMilliseconds && (obj.title?.includes(global) || obj.content?.toLowerCase().includes(global))
     );
     return filteredArray;
   } else if (before) {
     filteredArray = objectArray.filter(
-      (obj) => obj.creationTime <= beforeAsMilliseconds && (obj.title?.includes(global) || obj.content?.toLowerCase().includes(global))
+      (obj) => obj.creationTime <= formattedDateAsMilliseconds && (obj.title?.includes(global) || obj.content?.toLowerCase().includes(global))
     );
     return filteredArray;
   } else {
