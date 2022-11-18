@@ -36,7 +36,6 @@ const App = () => {
   const hiddenTicketsAmount = fetchedTickets.length - visibleTickets.length;
   ////////////////////////////////
 
-  //const hiddenTicketsAmount = combinedTickets.length - visibleTickets.length;
   // Check param type
   const searchParamsHelper = (val: string, newPage: number) => {
     const searchParamsObj = { page: newPage, global: '', userEmail: '', after: '', before: '' };
@@ -124,7 +123,7 @@ const App = () => {
       {visibleTickets && (
         <>
           <div className='results'>
-            Showing {visibleTickets?.length} results of {data?.totalLength}
+            Showing {visibleTickets?.length} results of {data?.totalLength}{' '}
             {hiddenTicketsAmount === 1
               ? `(${hiddenTicketsAmount} hidden ticket `
               : hiddenTicketsAmount > 1 && `(${hiddenTicketsAmount} hidden tickets `}
