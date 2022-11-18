@@ -7,15 +7,15 @@ import type { TicketsProps } from './Tickets';
 type SingleTicketProps = {
   ticket: Ticket;
   hideTicket: TicketsProps['hideTicket'];
-  lastTicketElementRef?: any;
+  elementRef?: any;
 };
 
-const SingleTicket: FC<SingleTicketProps> = ({ ticket, hideTicket, lastTicketElementRef }) => {
+const SingleTicket: FC<SingleTicketProps> = ({ ticket, hideTicket, elementRef }) => {
   const [showMore, setShowMore] = useState<boolean>(false);
   const toggleShowMore = (): void => setShowMore(!showMore);
 
   return (
-    <li key={ticket.id} className='ticket' ref={lastTicketElementRef}>
+    <li key={ticket.id} className='ticket' ref={elementRef}>
       <div className='styledHeader'>
         <span className='hiddenStyledButton' onClick={() => hideTicket(ticket.id)}>
           Hide
